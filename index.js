@@ -17,7 +17,7 @@ mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: 
     if (val.startsWith('--weapon')) require('./tasks/weapons')
     if (val.startsWith('--shield')) require('./tasks/shields')
     if (val.startsWith('--trans')) require('./tasks/transactions')
-    if (val.startsWith('--test')) require('./tasks/shields')
+    if (val.startsWith('--cron')) require('./tasks/cron')
     if (val.startsWith('--proc')) {
       const type = val.split('=')[1].toString().trim()
       switch (type) {

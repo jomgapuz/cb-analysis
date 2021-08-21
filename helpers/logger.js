@@ -14,9 +14,10 @@ const logSender = {
   char: 'Character',
   weapon: 'Weapon',
   shield: 'Shield',
-  trans: 'Transaction'
+  trans: 'Transaction',
+  cron: 'Cron'
 }
 
-module.exports = (level, sender, type, msg) => {
-  console.log(clc.blue(moment().format('LTS')) + ' ' + severityMap[level](`[${logSender[sender]} ${type.toUpperCase()}]`) + ' ' + clc.white.bold(msg))
+module.exports = (level, sender, type = null, msg) => {
+  console.log(clc.blue(moment().format('LTS')) + ' ' + severityMap[level](`[${logSender[sender].toUpperCase()}${(type ? ` ${type.toUpperCase()}` : '')}]`) + ' ' + clc.white.bold(msg))
 }
