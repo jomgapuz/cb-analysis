@@ -3,6 +3,7 @@ const pRetry = require('p-retry')
 
 const web3Helper = require('../helpers/web3-helper')
 const { queue } = require('../helpers/queue')
+const logger = require('../helpers/logger')
 
 let STARTING_BLOCK = process.env.STARTING_BLOCK || 9000437
 const BLOCKS_PER_CALL = 2000
@@ -29,12 +30,7 @@ const start = async () => {
       .getPastEvents(web3Helper.getEvent(nftAddress), { fromBlock, toBlock: fromBlock + BLOCKS_PER_CALL }),
     { retries: SCRAPE_RETRIES })
 
-    console.log(
-      `[${web3Helper.getTypeName(nftAddress).toUpperCase()} QUEUE]`,
-      fromBlock,
-      results.length,
-      BLOCKS_PER_CALL
-    )
+    logger('info', 'char', 'queue', `${fromBlock} ${results.length} ${BLOCKS_PER_CALL}`)
 
     results.forEach(result => {
       toProcess.push({

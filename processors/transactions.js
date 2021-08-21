@@ -1,6 +1,7 @@
 const pRetry = require('p-retry')
 
 const { queue } = require('../helpers/queue')
+const logger = require('../helpers/logger')
 
 const { Transactions } = require('../models')
 
@@ -24,13 +25,10 @@ const start = async () => {
     try {
       const bulkResult = await pRetry(() => bulk.execute(), { retries: BULK_INSERT_RETRIES })
 
-      console.log(
-        '[TRANSACTION PROCESSED]',
-        bulkResult.nUpserted + bulkResult.nModified
-      )
+      logger('success', 'trans', 'processed', bulkResult.nUpserted + bulkResult.nModified)
       done()
     } catch (e) {
-      console.log(e)
+      logger('error', 'trans', 'processor', e.message)
     }
     await start()
   }

@@ -3,6 +3,7 @@ const pRetry = require('p-retry')
 
 const web3Helper = require('../helpers/web3-helper')
 const { queue } = require('../helpers/queue')
+const logger = require('../helpers/logger')
 
 let STARTING_BLOCK = process.env.STARTING_BLOCK || 9000437
 const BLOCKS_PER_CALL = 2000
@@ -33,12 +34,7 @@ const start = async () => {
 
     results = results.filter(result => (result.returnValues.from === web3Helper.getCryptoBladesAddress() || result.returnValues.to === web3Helper.getCryptoBladesAddress()))
 
-    console.log(
-      '[TRANSACTION QUEUE]',
-      fromBlock,
-      results.length,
-      BLOCKS_PER_CALL
-    )
+    logger('info', 'trans', 'queue', `${fromBlock} ${results.length} ${BLOCKS_PER_CALL}`)
 
     results.forEach(result => {
       const { from, to, value } = result.returnValues

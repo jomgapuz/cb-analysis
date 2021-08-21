@@ -2,6 +2,7 @@ const pRetry = require('p-retry')
 const md5 = require('md5')
 
 const { queue } = require('../helpers/queue')
+const logger = require('../helpers/logger')
 
 const { Fights } = require('../models')
 
@@ -27,13 +28,10 @@ const start = async () => {
     try {
       const bulkResult = await pRetry(() => bulk.execute(), { retries: BULK_INSERT_RETRIES })
 
-      console.log(
-        '[FIGHT PROCESSED]',
-        bulkResult.nUpserted + bulkResult.nModified
-      )
+      logger('success', 'fight', 'processed', bulkResult.nUpserted + bulkResult.nModified)
       done()
     } catch (e) {
-      console.log(e)
+      logger('error', 'fight', 'processor', e.message)
     }
     await start()
   }

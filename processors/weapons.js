@@ -3,6 +3,7 @@ const pRetry = require('p-retry')
 const web3Helper = require('../helpers/web3-helper')
 const multicall = require('../helpers/multicall')
 const { queue } = require('../helpers/queue')
+const logger = require('../helpers/logger')
 
 const { Weapons } = require('../models')
 
@@ -36,13 +37,10 @@ const start = async () => {
     try {
       const bulkResult = await pRetry(() => bulk.execute(), { retries: BULK_INSERT_RETRIES })
 
-      console.log(
-          `[${web3Helper.getTypeName(address).toUpperCase()} PROCESSED]`,
-          bulkResult.nUpserted + bulkResult.nModified
-      )
+      logger('success', 'weapon', 'processed', bulkResult.nUpserted + bulkResult.nModified)
       done()
     } catch (e) {
-      console.log(e)
+      logger('error', 'weapon', 'processor', e.message)
     }
     await start()
   }

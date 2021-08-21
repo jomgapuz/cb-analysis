@@ -14,10 +14,12 @@
   "license": "ISC",
   "dependencies": {
     "bull": "^3.29.0",
+    "cli-color": "^2.0.0",
     "cli-progress": "^3.9.0",
     "dotenv": "^10.0.0",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
+    "moment": "^2.29.1",
     "mongoose": "^5.13.7",
     "p-queue": "^5.0.0",
     "p-retry": "^4.6.1",
