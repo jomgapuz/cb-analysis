@@ -18,5 +18,5 @@ const logSender = {
 }
 
 module.exports = (level, sender, type, msg) => {
-  console.log(clc.blue(moment().format('LTS')) + ' ' + severityMap[level](`[${logSender[sender]}] ${type.toUpperCase()}`) + ' ' + clc.white.bold(msg))
+  console.log(clc.blue(moment().format('LTS')) + ' ' + severityMap[level](`[${logSender[sender]} ${type.toUpperCase()}]`) + ' ' + clc.white.bold(msg))
 }
