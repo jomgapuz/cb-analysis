@@ -25,7 +25,7 @@ const start = async () => {
 
   const runQueue = (fromBlock) => async () => {
     const results = await pRetry(() => web3Helper
-      .getShields()
+      .getWeapons()
       .getPastEvents(web3Helper.getEvent(nftAddress), { fromBlock, toBlock: fromBlock + BLOCKS_PER_CALL }),
     { retries: SCRAPE_RETRIES })
 

@@ -7,8 +7,8 @@ const { queue } = require('../helpers/queue')
 let STARTING_BLOCK = process.env.STARTING_BLOCK || 9000437
 const BLOCKS_PER_CALL = 2000
 const DATAS_PER_BATCH = 500
-const SCRAPE_RETRIES = 10
-const MAX_QUEUE_ATTEMPT = 10
+const SCRAPE_RETRIES = 1
+const MAX_QUEUE_ATTEMPT = 1
 
 process.argv.forEach((val) => {
   if (val.startsWith('--start')) STARTING_BLOCK = parseInt(val.split('=')[1])
@@ -25,7 +25,7 @@ const start = async () => {
 
   const runQueue = (fromBlock) => async () => {
     const results = await pRetry(() => web3Helper
-      .getShields()
+      .getCharacters()
       .getPastEvents(web3Helper.getEvent(nftAddress), { fromBlock, toBlock: fromBlock + BLOCKS_PER_CALL }),
     { retries: SCRAPE_RETRIES })
 
