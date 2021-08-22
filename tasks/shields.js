@@ -84,9 +84,10 @@ const start = async () => {
     }
   }
 
-  mainQueue.add(runQueue(STARTING_BLOCK), { priority: MAX_BLOCK_MULT })
-  for (let i = 1; i < MAX_BLOCK_MULT; i += 1) {
-    mainQueue.add(runQueue(STARTING_BLOCK + (BLOCKS_PER_CALL * i)), { priority: MAX_BLOCK_MULT - i })
+  const max = Math.floor((END_BLOCK - STARTING_BLOCK) / BLOCKS_PER_CALL)
+  mainQueue.add(runQueue(STARTING_BLOCK), { priority: max })
+  for (let i = 1; i < max; i += 1) {
+    mainQueue.add(runQueue(STARTING_BLOCK + (BLOCKS_PER_CALL * i)), { priority: max - i })
   }
 
   await mainQueue.onIdle()

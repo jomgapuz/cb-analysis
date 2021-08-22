@@ -7,7 +7,7 @@ const logger = require('../helpers/logger')
 
 const { BlockQueue } = require('../models')
 
-const BLOCKS_PER_CALL = 2000
+const BLOCKS_PER_CALL = 300
 const DATAS_PER_BATCH = 500
 const SCRAPE_RETRIES = 10
 const MAX_QUEUE_ATTEMPT = 10
@@ -90,10 +90,10 @@ const start = async () => {
       itemQueue.add(items, { attempts: MAX_QUEUE_ATTEMPT })
     }
   }
-
-  mainQueue.add(runQueue(STARTING_BLOCK), { priority: MAX_BLOCK_MULT })
-  for (let i = 1; i < MAX_BLOCK_MULT; i += 1) {
-    mainQueue.add(runQueue(STARTING_BLOCK + (BLOCKS_PER_CALL * i)), { priority: MAX_BLOCK_MULT - i })
+  const max = Math.floor((END_BLOCK - STARTING_BLOCK) / BLOCKS_PER_CALL)
+  mainQueue.add(runQueue(STARTING_BLOCK), { priority: max })
+  for (let i = 1; i < max; i += 1) {
+    mainQueue.add(runQueue(STARTING_BLOCK + (BLOCKS_PER_CALL * i)), { priority: max - i })
   }
 
   await mainQueue.onIdle()

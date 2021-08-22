@@ -20,6 +20,7 @@
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
     "mongoose": "^5.13.7",
     "p-queue": "^5.0.0",
     "p-retry": "^4.6.1",
