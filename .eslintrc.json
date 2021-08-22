@@ -5,16 +5,12 @@
         "node": true
     },
     "extends": [
-        "standard",
-        "prettier"
+        "standard"
     ],
-    "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint", "prettier"],
     "parserOptions": {
         "ecmaVersion": 12
     },
     "rules": {
-        "new-cap": "off",
-        "prettier/prettier": 1
+        "new-cap": "off"
     }
 }
