@@ -5,14 +5,24 @@ const web3Helper = require('../helpers/web3-helper')
 const { queue } = require('../helpers/queue')
 const logger = require('../helpers/logger')
 
-let STARTING_BLOCK = process.env.STARTING_BLOCK || 9000437
+const { BlockQueue } = require('../models')
+
 const BLOCKS_PER_CALL = 2000
 const DATAS_PER_BATCH = 500
 const SCRAPE_RETRIES = 10
 const MAX_QUEUE_ATTEMPT = 10
+const MAX_BLOCK_MULT = 10
+
+let STARTING_BLOCK = 9000437
+let CURRENT_BLOCK = STARTING_BLOCK
+let END_BLOCK = STARTING_BLOCK + (BLOCKS_PER_CALL * MAX_BLOCK_MULT)
 
 process.argv.forEach((val) => {
-  if (val.startsWith('--start')) STARTING_BLOCK = parseInt(val.split('=')[1])
+  if (val.startsWith('--start')) {
+    STARTING_BLOCK = parseInt(val.split('=')[1])
+    CURRENT_BLOCK = STARTING_BLOCK
+    END_BLOCK = STARTING_BLOCK + (BLOCKS_PER_CALL * MAX_BLOCK_MULT)
+  }
 })
 
 const mainQueue = new PQueue({ concurrency: 50 })
@@ -20,8 +30,19 @@ const mainQueue = new PQueue({ concurrency: 50 })
 let toProcess = []
 
 const start = async () => {
-  const latestBlock = await web3Helper.getLatestBlock()
   const itemQueue = queue('fight')
+
+  const bQueue = await BlockQueue.findOne({ type: 'fight' })
+  if (bQueue) {
+    if (bQueue.currentBlock > bQueue.startingBlock && bQueue.currentBlock < bQueue.endBlock) STARTING_BLOCK = parseInt(bQueue.currentBlock)
+    else if (bQueue.currentBlock >= bQueue.endBlock) {
+      STARTING_BLOCK = parseInt(bQueue.startingBlock + (BLOCKS_PER_CALL * MAX_BLOCK_MULT))
+      END_BLOCK = STARTING_BLOCK + (BLOCKS_PER_CALL * MAX_BLOCK_MULT)
+    } else {
+      STARTING_BLOCK = parseInt(bQueue.startingBlock)
+      END_BLOCK = STARTING_BLOCK + (BLOCKS_PER_CALL * MAX_BLOCK_MULT)
+    }
+  }
 
   const runQueue = (fromBlock) => async () => {
     const results = await pRetry(() => web3Helper
@@ -44,6 +65,17 @@ const start = async () => {
       })
       checkToProcess(DATAS_PER_BATCH)
     })
+
+    CURRENT_BLOCK += BLOCKS_PER_CALL
+
+    await BlockQueue.findOneAndUpdate({ type: 'fight' }, {
+      startingBlock: STARTING_BLOCK,
+      currentBlock: CURRENT_BLOCK,
+      endBlock: END_BLOCK
+    }, {
+      new: true,
+      upsert: true
+    })
   }
 
   const checkToProcess = async (maxLength) => {
@@ -54,16 +86,18 @@ const start = async () => {
     }
   }
 
-  const start = STARTING_BLOCK
-  const end = Math.floor((parseInt(latestBlock.number) - start) / BLOCKS_PER_CALL)
-  mainQueue.add(runQueue(start))
-  for (let i = 0; i < end; i += 1) {
-    mainQueue.add(runQueue(start + (BLOCKS_PER_CALL * i)))
+  mainQueue.add(runQueue(STARTING_BLOCK), { priority: 0 })
+  for (let i = 1; i < MAX_BLOCK_MULT; i += 1) {
+    mainQueue.add(runQueue(STARTING_BLOCK + (BLOCKS_PER_CALL * i)), { priority: i })
   }
 
   await mainQueue.onIdle()
 
-  checkToProcess(0)
+  await checkToProcess(0)
+  // process.exit(0)
+  setTimeout(() => {
+    start()
+  }, 10000)
 }
 
 start()

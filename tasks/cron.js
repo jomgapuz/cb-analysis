@@ -23,7 +23,7 @@ async function clearCompleted () {
     logger('main', 'cron', name, `Cleaned ${count.completed} completed tasks.`)
   }
   cleanerIndex++
-  if (cleanerIndex >= list.length) cleanerIndex = 0
+  if (cleanerIndex >= list.length) return process.exit(0)
   setTimeout(async () => {
     clearCompleted()
   }, 10000)
@@ -41,7 +41,7 @@ async function retryFailed () {
   }))
   if (res.length > 0) { logger('warn', 'cron', name, `${res.length} jobs successfully requeued.`) }
   retryIndex++
-  if (retryIndex >= list.length) retryIndex = 0
+  if (retryIndex >= list.length) return process.exit(0)
   setTimeout(async () => {
     retryFailed()
   }, 10000)

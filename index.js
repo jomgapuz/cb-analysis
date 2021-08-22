@@ -5,7 +5,12 @@ require('dotenv').config()
 
 let connectionString = process.env.MONGDB_URL
 if (process.env.MONGODB_SSL) connectionString += `&tls=true&tlsCAFile=${path.join(__dirname, 'cert.crt')}`
-mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
+mongoose.connect(connectionString, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+}, (err) => {
   if (err) {
     console.log(err)
     process.exit(0)

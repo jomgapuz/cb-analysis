@@ -3,5 +3,6 @@ module.exports = {
   Weapons: require('./weapons'),
   Shields: require('./shields'),
   Fights: require('./fights'),
-  Transactions: require('./transactions')
+  Transactions: require('./transactions'),
+  BlockQueue: require('./queue')
 }
