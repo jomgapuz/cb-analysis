@@ -27,11 +27,15 @@ const start = async () => {
 
     items.forEach(async (item, i) => {
       const block = await web3Helper.getBlock(item.blockNumber)
+      let ownerAddress = web3Helper.getDefaultAddress()
+      try {
+        ownerAddress = await web3Helper.getNFTOwner(address, item.nftId)
+      } catch (e) {}
       bulk
         .find({ [idKey]: item.nftId })
         .upsert()
         .replaceOne(
-          web3Helper.processNFTData(address, item.nftId, item.minter, block, data[i])
+          web3Helper.processNFTData(address, item.nftId, ownerAddress, block, data[i])
         )
     })
 

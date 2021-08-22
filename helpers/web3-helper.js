@@ -3,7 +3,7 @@ const _ = require('lodash')
 
 const helpers = {
   getWeb3: () => new Web3(process.env.HTTP_PROVIDER_URL || 'https://bsc-dataseed1.ninicoin.io/'),
-
+  getDefaultAddress: () => process.env.ADDRESS_DEFAULT || '0x0000000000000000000000000000000000000000',
   getCryptoBladesAddress: () => process.env.ADDRESS_CRYPTOBLADES || '0x39Bea96e13453Ed52A734B6ACEeD4c41F57B2271',
   getStakingAddress: () => process.env.ADDRESS_STAKING || '0xd6b2D8f59Bf30cfE7009fB4fC00a7b13Ca836A2c',
   getTokenAddress: () => process.env.ADDRESS_TOKEN || '0x154a9f9cbd3449ad22fdae23044319d6ef2a1fab',
