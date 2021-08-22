@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const path = require('path')
 
+require('./services/bsc-nodes-services')
+
 require('dotenv').config()
 
 let connectionString = process.env.MONGDB_URL
@@ -10,6 +12,9 @@ mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: 
     console.log(err)
     process.exit(0)
   }
+
+  console.log('🌿 Connected to MongoDB')
+
   process.argv.forEach((val) => {
     if (val.startsWith('--node')) process.env.HTTP_PROVIDER_URL = val.split('=')[1]
     if (val.startsWith('--fight')) require('./tasks/fights')
