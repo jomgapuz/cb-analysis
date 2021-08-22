@@ -1,5 +1,5 @@
 const clc = require('cli-color')
-const moment = require('moment')
+const moment = require('moment-timezone')
 
 const severityMap = {
   info: clc.cyan,
@@ -19,5 +19,5 @@ const logSender = {
 }
 
 module.exports = (level, sender, type = null, msg) => {
-  console.log(clc.blue(moment().format('LTS')) + ' ' + severityMap[level](`[${logSender[sender].toUpperCase()}${(type ? ` ${type.toUpperCase()}` : '')}]`) + ' ' + clc.white.bold(msg))
+  console.log(clc.blue(moment().tz('Asia/Manila').format('LTS')) + ' ' + severityMap[level](`[${logSender[sender].toUpperCase()}${(type ? ` ${type.toUpperCase()}` : '')}]`) + ' ' + clc.white.bold(msg))
 }
