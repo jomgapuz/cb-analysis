@@ -12,6 +12,7 @@ const DATAS_PER_BATCH = 500
 const SCRAPE_RETRIES = 10
 const MAX_QUEUE_ATTEMPT = 10
 const MAX_BLOCK_MULT = 10
+const TASK_INTERVAL = 5 // in seconds
 
 let STARTING_BLOCK = 9000437
 let CURRENT_BLOCK = STARTING_BLOCK
@@ -35,8 +36,10 @@ const start = async () => {
 
   const bQueue = await BlockQueue.findOne({ type: web3Helper.getTypeName(nftAddress) })
   if (bQueue) {
-    if (bQueue.currentBlock > bQueue.startingBlock && bQueue.currentBlock < bQueue.endBlock) STARTING_BLOCK = parseInt(bQueue.currentBlock)
-    else if (bQueue.currentBlock >= bQueue.endBlock) {
+    if (bQueue.currentBlock > bQueue.startingBlock && bQueue.currentBlock < bQueue.endBlock) {
+      STARTING_BLOCK = parseInt(bQueue.currentBlock)
+      END_BLOCK = parseInt(bQueue.endBlock)
+    } else if (bQueue.currentBlock >= bQueue.endBlock) {
       STARTING_BLOCK = parseInt(bQueue.startingBlock + (BLOCKS_PER_CALL * MAX_BLOCK_MULT))
       END_BLOCK = STARTING_BLOCK + (BLOCKS_PER_CALL * MAX_BLOCK_MULT)
     } else {
@@ -81,9 +84,9 @@ const start = async () => {
     }
   }
 
-  mainQueue.add(runQueue(STARTING_BLOCK), { priority: 0 })
+  mainQueue.add(runQueue(STARTING_BLOCK), { priority: MAX_BLOCK_MULT })
   for (let i = 1; i < MAX_BLOCK_MULT; i += 1) {
-    mainQueue.add(runQueue(STARTING_BLOCK + (BLOCKS_PER_CALL * i)), { priority: i })
+    mainQueue.add(runQueue(STARTING_BLOCK + (BLOCKS_PER_CALL * i)), { priority: MAX_BLOCK_MULT - i })
   }
 
   await mainQueue.onIdle()
@@ -92,7 +95,7 @@ const start = async () => {
   // process.exit(0)
   setTimeout(() => {
     start()
-  }, 10000)
+  }, TASK_INTERVAL * 1000)
 }
 
 start()
