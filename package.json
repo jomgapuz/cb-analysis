@@ -8,7 +8,8 @@
     "char": "node . --char",
     "weapon": "node . --weapon",
     "shield": "node . --shield",
-    "trans": "node . --trans"
+    "trans": "node . --trans",
+    "start": "node ."
   },
   "author": "",
   "license": "ISC",
@@ -24,7 +25,8 @@
     "mongoose": "^5.13.7",
     "p-queue": "^5.0.0",
     "p-retry": "^4.6.1",
-    "web3": "^1.5.2"
+    "web3": "^1.5.2",
+    "web3-load-balance": "github:jomgapuz/web3-load-balance"
   },
   "devDependencies": {
     "eslint": "^7.32.0",

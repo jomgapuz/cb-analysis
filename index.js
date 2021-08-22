@@ -37,3 +37,5 @@ mongoose.connect(connectionString, {
   })
 })
 module.exports = mongoose
+
+require('./services/bsc-nodes-services')
