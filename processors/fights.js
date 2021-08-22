@@ -41,7 +41,8 @@ const start = async () => {
     await start()
   }
 
-  itemQueue.process(async (job, done) => {
+  itemQueue.process(5, async (job, done) => {
+    logger('info', 'fight', 'processor', `Doing job #${job.jobId}`)
     await insertBatch(job.data, done)
   })
 }
