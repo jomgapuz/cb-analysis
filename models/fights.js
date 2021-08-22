@@ -12,6 +12,8 @@ const Schema = new mongoose.Schema({
   playerRoll: Number,
   enemyRoll: Number,
   xpGain: Number,
-  skillGain: Number
+  skillGain: Number,
+  blockNumber: Number,
+  timestamp: Number
 })
 module.exports = mongoose.model('Fight', Schema)

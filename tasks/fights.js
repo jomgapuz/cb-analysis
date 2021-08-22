@@ -64,7 +64,8 @@ const start = async () => {
         playerRoll: result.returnValues[4],
         enemyRoll: result.returnValues[5],
         xpGain: result.returnValues[6],
-        skillGain: result.returnValues[7]
+        skillGain: result.returnValues[7],
+        blockNumber: result.blockNumber
       })
       checkToProcess(DATAS_PER_BATCH)
     })

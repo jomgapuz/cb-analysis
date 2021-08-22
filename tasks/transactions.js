@@ -66,7 +66,8 @@ const start = async () => {
         hash: result.transactionHash,
         from,
         to,
-        value
+        value,
+        blockNumber: result.blockNumber
       })
       checkToProcess(DATAS_PER_BATCH)
     })

@@ -13,7 +13,8 @@ const Schema = new mongoose.Schema({
   stat1Value: Number,
   stat2Value: Number,
   stat3Value: Number,
-  timestamp: Number,
-  ownerAddress: String
+  ownerAddress: String,
+  blockNumber: Number,
+  timestamp: Number
 })
 module.exports = mongoose.model('Shield', Schema)

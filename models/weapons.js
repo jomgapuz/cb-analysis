@@ -16,7 +16,8 @@ const Schema = new mongoose.Schema({
   lowStarBurn: Number,
   fourStarBurn: Number,
   fiveStarBurn: Number,
-  timestamp: Number,
-  ownerAddress: String
+  ownerAddress: String,
+  blockNumber: Number,
+  timestamp: Number
 })
 module.exports = mongoose.model('Weapon', Schema)

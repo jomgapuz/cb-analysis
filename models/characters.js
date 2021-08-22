@@ -7,7 +7,8 @@ const Schema = new mongoose.Schema({
   },
   charLevel: Number,
   charElement: String,
-  timestamp: Number,
-  ownerAddress: String
+  ownerAddress: String,
+  blockNumber: Number,
+  timestamp: Number
 })
 module.exports = mongoose.model('Character', Schema)

@@ -1,5 +1,6 @@
 const pRetry = require('p-retry')
 
+const web3Helper = require('../helpers/web3-helper')
 const { queue } = require('../helpers/queue')
 const logger = require('../helpers/logger')
 
@@ -15,7 +16,11 @@ const start = async () => {
 
     const bulk = Transactions.collection.initializeUnorderedBulkOp()
 
-    items.forEach((item, i) => {
+    items.forEach(async (item, i) => {
+      const block = await web3Helper.getBlock(item.blockNumber)
+      const { number, timestamp } = block
+      item.blockNumber = number
+      item.timestamp = timestamp
       bulk
         .find({ hash: item.hash })
         .upsert()

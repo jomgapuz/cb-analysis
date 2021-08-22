@@ -59,7 +59,8 @@ const start = async () => {
     results.forEach(result => {
       toProcess.push({
         nftId: result.returnValues[0],
-        minter: result.returnValues[1]
+        minter: result.returnValues[1],
+        blockNumber: result.blockNumber
       })
       checkToProcess(DATAS_PER_BATCH)
     })

@@ -25,12 +25,13 @@ const start = async () => {
 
     const bulk = Weapons.collection.initializeUnorderedBulkOp()
 
-    items.forEach((item, i) => {
+    items.forEach(async (item, i) => {
+      const block = await web3Helper.getBlock(item.blockNumber)
       bulk
         .find({ [idKey]: item.nftId })
         .upsert()
         .replaceOne(
-          web3Helper.processNFTData(address, item.nftId, item.seller, data[i])
+          web3Helper.processNFTData(address, item.nftId, item.minter, block, data[i])
         )
     })
 

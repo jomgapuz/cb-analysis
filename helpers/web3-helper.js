@@ -157,8 +157,12 @@ const helpers = {
     return helpers.processNFTData(nftAddress, nftId, rawPrice, sellerAddress, data)
   },
 
+  getBlock: async (number = 'latest') => {
+    return helpers.getWeb3().eth.getBlock(number)
+  },
+
   getLatestBlock: async () => {
-    return helpers.getWeb3().eth.getBlock('latest')
+    return helpers.getBlock()
   },
 
   WeaponElement: {
@@ -215,16 +219,20 @@ const helpers = {
   isWeapon: (nftAddress) => nftAddress === helpers.getWeaponsAddress(),
   isShield: (nftAddress) => nftAddress === helpers.getShieldsAddress(),
 
-  processNFTData: (nftAddress, nftId, ownerAddress, data) => {
-    const timestamp = Date.now()
-
+  processNFTData: (nftAddress, nftId, ownerAddress, block, data) => {
+    const { number, timestamp } = block
     if (helpers.isCharacter(nftAddress)) {
       const character = data
       const charLevel = parseInt(character[1], 10)
       const charElement = helpers.traitNumberToName(+character[2])
 
       const ret = {
-        charId: nftId, charLevel, charElement, timestamp, ownerAddress
+        charId: nftId,
+        charLevel,
+        charElement,
+        ownerAddress,
+        blockNumber: number,
+        timestamp
       }
 
       return ret
@@ -264,8 +272,9 @@ const helpers = {
         lowStarBurnPoints,
         fourStarBurnPoints,
         fiveStarBurnPoints,
-        timestamp,
-        ownerAddress
+        ownerAddress,
+        blockNumber: number,
+        timestamp
       }
 
       return ret
@@ -297,8 +306,9 @@ const helpers = {
         stat1Value,
         stat2Value,
         stat3Value,
-        timestamp,
-        ownerAddress
+        ownerAddress,
+        blockNumber: number,
+        timestamp
       }
     }
 

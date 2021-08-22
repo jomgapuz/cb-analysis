@@ -1,6 +1,7 @@
 const pRetry = require('p-retry')
 const md5 = require('md5')
 
+const web3Helper = require('../helpers/web3-helper')
 const { queue } = require('../helpers/queue')
 const logger = require('../helpers/logger')
 
@@ -16,9 +17,13 @@ const start = async () => {
 
     const bulk = Fights.collection.initializeUnorderedBulkOp()
 
-    fights.forEach((fight, i) => {
+    fights.forEach(async (fight, i) => {
+      const block = await web3Helper.getBlock(fight.blockNumber)
+      const { number, timestamp } = block
       const hash = md5(JSON.stringify(fights))
       fight.hash = hash
+      fight.blockNumber = number
+      fight.timestamp = timestamp
       bulk
         .find({ hash })
         .upsert()

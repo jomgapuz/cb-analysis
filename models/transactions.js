@@ -7,6 +7,8 @@ const Schema = new mongoose.Schema({
   },
   from: String,
   to: String,
-  value: String
+  value: String,
+  blockNumber: Number,
+  timestamp: Number
 })
 module.exports = mongoose.model('Transaction', Schema)
