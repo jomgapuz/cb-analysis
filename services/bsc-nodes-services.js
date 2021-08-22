@@ -32,12 +32,10 @@ const web3BalancedService = createLoadBalancedContractsService(contractsServices
 
 exports.web3BalancedService = web3BalancedService
 
-const { nodeIndex, runContract } = web3BalancedService
-
 const fetchInGameOnlyFunds = async (startingNumber = 0) => {
   return Promise.all(
     Array(2000).fill(0).map(async (_, index) => {
-      const currentNodeIndex = nodeIndex()
+      const currentNodeIndex = web3BalancedService.nodeIndex()
 
       /**
        * `NOTE` This is similar to
@@ -50,11 +48,12 @@ const fetchInGameOnlyFunds = async (startingNumber = 0) => {
        *  })
        * ```
        */
-      const result = runContract(
+      const result = web3BalancedService.onContract(
         'cryptoblades',
-        'inGameOnlyFunds',
-        ['0xF9BDE92bF245c3CeB30bc556AE1D56E05bF56335'],
-        { form: '0x0000000000000000000000000000000000000000' }
+        (contract) => contract
+          .methods
+          .inGameOnlyFunds('0xF9BDE92bF245c3CeB30bc556AE1D56E05bF56335')
+          .call({ from: '0x0000000000000000000000000000000000000000' })
       )
         .then((value) => {
           console.log(
@@ -68,6 +67,25 @@ const fetchInGameOnlyFunds = async (startingNumber = 0) => {
 
           return value
         })
+
+      // const result = web3BalancedService.runContract(
+      //   'cryptoblades',
+      //   'inGameOnlyFunds',
+      //   ['0xF9BDE92bF245c3CeB30bc556AE1D56E05bF56335'],
+      //   { form: '0x0000000000000000000000000000000000000000' }
+      // )
+      //   .then((value) => {
+      //     console.log(
+      //       'Node:',
+      //       currentNodeIndex,
+      //       '/ value >>',
+      //       value,
+      //       '/ #',
+      //       startingNumber + index
+      //     )
+
+      //     return value
+      //   })
 
       return result
     })
@@ -85,7 +103,47 @@ const run = async () => {
     fetchInGameOnlyFunds(8000)
   ])
 
+  // const result = await Promise.all([
+  //   fetchInGameOnlyFunds(0),
+  //   fetchInGameOnlyFunds(2000),
+  //   fetchInGameOnlyFunds(4000),
+  //   fetchInGameOnlyFunds(6000),
+  //   fetchInGameOnlyFunds(8000)
+  // ])
+
+  // const result2 = await Promise.all([
+  //   fetchInGameOnlyFunds(10000),
+  //   fetchInGameOnlyFunds(12000),
+  //   fetchInGameOnlyFunds(14000),
+  //   fetchInGameOnlyFunds(16000),
+  //   fetchInGameOnlyFunds(18000)
+  // ])
+
+  // const result3 = await Promise.all([
+  //   fetchInGameOnlyFunds(20000),
+  //   fetchInGameOnlyFunds(22000),
+  //   fetchInGameOnlyFunds(24000),
+  //   fetchInGameOnlyFunds(26000),
+  //   fetchInGameOnlyFunds(28000)
+  // ])
+
+  // const result4 = await Promise.all([
+  //   fetchInGameOnlyFunds(30000),
+  //   fetchInGameOnlyFunds(32000),
+  //   fetchInGameOnlyFunds(34000),
+  //   fetchInGameOnlyFunds(36000),
+  //   fetchInGameOnlyFunds(38000)
+  // ])
+
   const elapsedMinutes = (Date.now() - startedTime) / 1000 / 60
+
+  // console.log(
+  //   'finished in',
+  //   Math.floor(elapsedMinutes * 100) / 100,
+  //   'minutes. Result #:',
+  //   [...result, ...result2, ...result3, ...result4]
+  //     .reduce((current, list) => current + list.length, 0)
+  // )
 
   console.log(
     'finished in',
